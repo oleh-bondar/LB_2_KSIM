@@ -12,10 +12,58 @@
 ### Внесені зміни у вихідну логіку моделі, за варіантом:
 
 **Додати вплив віку на інфікування та результат захворювання** 
+<pre>
+to-report infection-probability 
+  ;; Define an age-dependent probability of infection
+  ;; You can modify this formula to suit your needs
+  if age < 52 * 20
+  [report (infectiousness + 20 - (age / 52))] ;;діти заболівають легше, но з часом імунітет стає сильнішим
+  if age >= 52 * 20 and age <= 52 * 50
+  [report infectiousness]  ;;у дорослих звичайний шанс заболіти
+  if age > 52 * 50
+  [report infectiousness + (age / 52) - 50] ;;старі люди з кожним роком заболівають все легше. Після 50 років на 1% легше за рік
+end
+  </pre>
 
+
+  <pre>
+to-report recover-probability 
+  ;; Define an age-dependent probability of infection
+  ;; You can modify this formula to suit your needs
+  if age < 52 * 20
+  [report (chance-recover - 20 + (age / 52))] ;;дітям важче боротися з заболіванням, но з часом імунітет стає сильнішим
+  if age >= 52 * 20 and age <= 52 * 50
+  [report chance-recover]  ;;у дорослих звичайний шанс виболіти
+  if age > 52 * 50
+  [report chance-recover - ((age / 52) - 50)] ;;старі люди з кожним роком важче переносять хворобу. Після 50 років на 1% важче за рік
+end
+  </pre>
+
+  
+<pre>
+;; If a turtle is sick, it infects other turtles on the same patch.
+;; Immune turtles don't get sick.
+to infect ;; turtle procedure
+  ask other turtles-here with [ not sick? and not immune? ]
+    [ let age-influence infection-probability
+      if random-float 100 < age-influence
+      [ get-sick ] ]
+end
+
+;; Once the turtle has been sick long enough, it
+;; either recovers (and becomes immune) or it dies.
+to recover-or-die ;; turtle procedure
+  if sick-time > duration                        ;; If the turtle has survived past the virus' duration, then
+    [ ifelse random-float 100 < recover-probability    ;; either recover or die
+      [ become-immune ]
+      [ die ] ]
+end
+                                
+                                </pre>
+                                
 **Додати вплив ступеня поширення захворювання (поточного відсотка інфікованих) на вірогідність появи нових агентів.**
 Було внесено зміну до процедури to update-global-variables: додано встановлення chance-reproduce в залежності від кількості інфікованих.
-Чим більше інфікованих, тим менше шанс на вірогідність появи нових агентів.
+Чим більше інфікованих, тим менше шанс на вірогідність появи нових агентів. Раніше вірогідність завжди була 1%.
 <pre>
 to update-global-variables
   if count turtles > 0
