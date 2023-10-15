@@ -76,6 +76,19 @@ end
 </pre>
 
 **Додати можливість регулювання тривалості імунітету та вірогідності захворіти повторно.** 
+<pre>
+    to infect ;; turtle procedure
+  ask other turtles-here with [ not sick? ]
+    [
+      ifelse immune?
+      [if random-float 100 < probability-sick-again ;;probability of getting sick again
+        [ get-sick ]]
+      [if random-float 100 < infection-probability
+          [ get-sick ]]
+  ]
+end
+</pre>
+
 
 
 ### Внесені зміни у вихідну логіку моделі, на власний розсуд:
