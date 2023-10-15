@@ -12,6 +12,7 @@
 ### Внесені зміни у вихідну логіку моделі, за варіантом:
 
 **Додати вплив віку на інфікування та результат захворювання** 
+infection-probability і recover-probability - це функції, які обчислюють ймовірність зараження та ймовірність одужання для кожної особи в залежності від її віку. Ці функції враховують вік особи, щоб симулювати той факт, що імунітет та вразливість до хвороби можуть змінюватися з віком. Їх логіка розділена на три частини відповідно до вікових категорій (діти, дорослі, старші люди).
 <pre>
 to-report infection-probability 
   ;; Define an age-dependent probability of infection
@@ -23,10 +24,6 @@ to-report infection-probability
   if age > 52 * 50
   [report infectiousness + (age / 52) - 50] ;;старі люди з кожним роком заболівають все легше. Після 50 років на 1% легше за рік
 end
-  </pre>
-
-
-  <pre>
 to-report recover-probability 
   ;; Define an age-dependent probability of infection
   ;; You can modify this formula to suit your needs
@@ -39,8 +36,8 @@ to-report recover-probability
 end
   </pre>
 
-  
-<pre>
+Зробив зміни у процедурах infect та recover-or-die, щоб вони вони правильно вираховували ймовірність зараження та ймовірність одужання.
+<p>
 ;; If a turtle is sick, it infects other turtles on the same patch.
 ;; Immune turtles don't get sick.
 to infect ;; turtle procedure
@@ -58,8 +55,7 @@ to recover-or-die ;; turtle procedure
       [ become-immune ]
       [ die ] ]
 end
-                                
-</pre>
+</p>
 
                                 
 **Додати вплив ступеня поширення захворювання (поточного відсотка інфікованих) на вірогідність появи нових агентів.**
