@@ -49,7 +49,7 @@ to infect ;; turtle procedure
       if random-float 100 < age-influence
       [ get-sick ] ]
 end
-
+                            
 ;; Once the turtle has been sick long enough, it
 ;; either recovers (and becomes immune) or it dies.
 to recover-or-die ;; turtle procedure
@@ -59,7 +59,8 @@ to recover-or-die ;; turtle procedure
       [ die ] ]
 end
                                 
-                                </pre>
+</pre>
+
                                 
 **Додати вплив ступеня поширення захворювання (поточного відсотка інфікованих) на вірогідність появи нових агентів.**
 Було внесено зміну до процедури to update-global-variables: додано встановлення chance-reproduce в залежності від кількості інфікованих.
