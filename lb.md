@@ -98,6 +98,69 @@ end
 
 
 ### Внесені зміни у вихідну логіку моделі, на власний розсуд:
+//змінив максимальний вік
+<pre>
+ set lifespan 100 * 52
+</pre>
+
+ //змінив кольори
+<pre>
+ to update-display
+  ask turtles
+    [ if shape != turtle-shape [ set shape turtle-shape ]
+      set color ifelse-value sick? [ red ] [ ifelse-value immune? [ grey ] [ set-color ] ] ]
+end
+
+to-report set-color
+  if age < 20 * 52
+  [report yellow]
+  if age >= 20 * 52 and age < 50 * 52
+  [report green]
+  if age >= 50 * 52
+  [report white]
+  
+end
+</pre>
+
+//Додав огранічєніє на вік.
+<pre>
+ to reproduce
+  if count turtles < carrying-capacity and random-float 100 < chance-reproduce and average-age > 10
+    [ hatch 1
+      [ set age 1
+        lt 45 fd 1
+        get-healthy ] ]
+end
+</pre>
+
+//додав змінну "середній вік" та монітор на інтерфейс.
+<pre>
+ set average-age mean [age] of turtles / 52
+</pre>
+
+//додав більш складну логіку рухання
+<pre>
+ ;; Turtles move about at random.
+to move ;; turtle procedure
+  let nearby-turtles other turtles in-radius 5 ; визначити туртлів у радіусі 5 одиниць
+    if any? nearby-turtles with [sick?] [
+      ; Якщо є інфіковані туртли поблизу, спробувати уникнути контакту
+      rt random 40 - 20
+      lt random 40 - 20
+    ]
+  let speed 0
+  ifelse not sick? [set speed 1] [set speed 0.5];; швидкість руху
+    ifelse random-float 100 < 70 ;; ймовірність змінити напрямок
+    [
+      rt random 40 - 20 ;; випадковий поворот на +/- 20 градусів
+      lt random 40 - 20
+    ]
+    [
+      ; продовжити рух у поточному напрямку
+    ]
+    fd speed ; рух на визначену відстань
+end
+</pre>
 
 
 ![Скріншот моделі в процесі симуляції](example-model.png)
